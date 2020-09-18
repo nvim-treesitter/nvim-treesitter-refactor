@@ -25,30 +25,111 @@ end
 
 function M.goto_definition_lsp_fallback(bufnr) M.goto_definition(bufnr, vim.lsp.buf.definition) end
 
+--- Get definitions of bufnr (unique and sorted by order of appearance).
+local function get_definitions(bufnr)
+  local local_nodes = locals.get_locals(bufnr)
+
+  -- Make sure the nodes are unique.
+  local nodes_set = {}
+  for _, loc in ipairs(local_nodes) do
+    if loc.definition then
+      locals.recurse_local_nodes(loc.definition, function(_, node, _, match)
+        -- lua doesn't compare tables by value,
+        -- use the value from byte count instead.
+        local _, _, start = node:start()
+        nodes_set[start] = {node = node, type = match or ""}
+      end)
+    end
+  end
+
+  -- Sort by order of appearance.
+  local definition_nodes = vim.tbl_values(nodes_set)
+  table.sort(definition_nodes, function (a, b)
+    local _, _, start_a = a.node:start()
+    local _, _, start_b = b.node:start()
+    return start_a < start_b
+  end)
+
+  return definition_nodes
+end
+
 function M.list_definitions(bufnr)
   local bufnr = bufnr or api.nvim_get_current_buf()
-  local definitions = locals.get_definitions(bufnr)
+  local definitions = get_definitions(bufnr)
 
   if #definitions < 1 then return end
 
   local qf_list = {}
 
-  for _, def in ipairs(definitions) do
-    locals.recurse_local_nodes(def, function(_, node, _, match)
-      local lnum, col, _ = node:start()
-
-      table.insert(qf_list, {
-        bufnr = bufnr,
-        lnum = lnum + 1,
-        col = col + 1,
-        text = ts_utils.get_node_text(node)[1] or "",
-        kind = match and match:sub(1, 1) or ""
-      })
-    end)
+  for _, node in ipairs(definitions) do
+    local lnum, col, _ = node.node:start()
+    local type = string.upper(node.type:sub(1, 1))
+    local text = ts_utils.get_node_text(node.node)[1] or ""
+    table.insert(qf_list, {
+      bufnr = bufnr,
+      lnum = lnum + 1,
+      col = col + 1,
+      text = text,
+      type = type,
+    })
   end
 
   vim.fn.setqflist(qf_list, 'r')
   api.nvim_command('copen')
+end
+
+function M.list_definitions_toc()
+  local winnr = api.nvim_get_current_win()
+  local bufnr = api.nvim_win_get_buf(winnr)
+  local definitions = get_definitions(bufnr)
+
+  if #definitions < 1 then return end
+
+  local loc_list = {}
+
+  -- Force some types to act like they are parents
+  -- instead of neighbors of the next nodes.
+  local containers = {
+    ['function'] = true,
+    ['type'] = true,
+    ['method'] = true,
+  }
+
+  local parents = {}
+
+  for _, def in ipairs(definitions) do
+    -- Get indentation level by putting all parents in a stack.
+    -- The length of the stack minus one is the current level of indentation.
+    local n = #parents
+    for i=1, n do
+      local index = n + 1 - i
+      local parent_def = parents[index]
+      if ts_utils.is_parent(parent_def.node, def.node)
+          or (containers[parent_def.type] and ts_utils.is_parent(parent_def.node:parent(), def.node)) then
+        break
+      else
+        parents[index] = nil
+      end
+    end
+    parents[#parents + 1] = def
+
+    local lnum, col, _ = def.node:start()
+    local type = string.upper(def.type:sub(1, 1))
+    local text = ts_utils.get_node_text(def.node)[1] or ""
+    table.insert(loc_list, {
+      bufnr = bufnr,
+      lnum = lnum + 1,
+      col = col + 1,
+      text = string.rep('  ', #parents - 1) .. text,
+      type = type,
+    })
+  end
+
+  vim.fn.setloclist(winnr, loc_list, 'r')
+  -- The title needs to end with `TOC`,
+  -- so Neovim displays it like a TOC instead of an error list.
+  vim.fn.setloclist(winnr, {}, 'a', {title = 'Definitions TOC'})
+  api.nvim_command('lopen')
 end
 
 function M.goto_adjacent_usage(bufnr, delta)
