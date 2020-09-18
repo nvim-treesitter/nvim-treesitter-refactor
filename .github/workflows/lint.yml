@@ -15,4 +15,4 @@ jobs:
           sudo apt install luarocks -y
           sudo luarocks install luacheck
       - name: Run Luacheck
-        run: ./scripts/style-check.sh
+        run: bash scripts/style-check.sh
