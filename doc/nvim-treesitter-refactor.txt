@@ -1,0 +1,150 @@
+*nvim-treesitter-refactor*
+
+Minimum version of neovim: nightly
+
+Authors: Steven Sojka <steelsojka@gmail.com>
+         Yazdani Kiyan <yazdani.kiyan@protonmail.com>
+         Vigouroux Thomas <tomvig38@gmail.com>
+         https://github.com/nvim-treesitter/nvim-treesitter/graphs/contributors
+
+                                       Type |gO| to see the table of contents.
+
+==============================================================================
+QUICK START                                       *nvim-treesitter-quickstart*
+
+See :help nvim-treesitter on how to configure modules
+
+------------------------------------------------------------------------------
+REFACTOR                                        *nvim-treesitter-refactor-mod*
+
+                                *nvim-treesitter-highlight-definitions-submod*
+Highlight definitions~
+
+Highlights definition and usages of the current symbol under the cursor.
+
+Query files: `locals.scm`.
+Supported options:
+- enable: `true` or `false`.
+- disable: list of languages.
+
+>
+  lua <<EOF
+  require'nvim-treesitter.configs'.setup {
+    refactor = {
+      highlight_definitions = { enable = true },
+    },
+  }
+  EOF
+<
+
+                              *nvim-treesitter-highlight-current-scope-submod*
+Highlight current scope~
+
+Highlights the block from the current scope where the cursor is.
+
+Query files: `locals.scm`.
+Supported options:
+- enable: `true` or `false`.
+- disable: list of languages.
+
+>
+  lua <<EOF
+  require'nvim-treesitter.configs'.setup {
+    refactor = {
+      highlight_current_scope = { enable = true },
+    },
+  }
+  EOF
+<
+
+                                         *nvim-treesitter-smart-rename-submod*
+Smart rename~
+
+Renames the symbol under the cursor within the current scope (and current file).
+
+Query files: `locals.scm`.
+Supported options:
+- enable: `true` or `false`.
+- disable: list of languages.
+- keymaps:
+  - smart_rename: rename symbol under the cursor.
+    Defaults to `grr`.
+
+>
+  lua <<EOF
+  require'nvim-treesitter.configs'.setup {
+    refactor = {
+      smart_rename = {
+        enable = true,
+        keymaps = {
+          smart_rename = "grr",
+        },
+      },
+    },
+  }
+  EOF
+<
+
+                                           *nvim-treesitter-navigation-submod*
+Navigation~
+
+Provides "go to definition" for the symbol under the cursor,
+and lists the definitions from the current file.
+
+Query files: `locals.scm`.
+Supported options:
+- enable: `true` or `false`.
+- disable: list of languages.
+- keymaps:
+  - goto_definition: go to the definition of the symbol under the cursor.
+    Defaults to `gnd`.
+  - goto_definition_lsp_fallback: go to the definition of the symbol under
+    the cursor or use vim.lsp.buf.definition if the symbol can not be
+    resolved. You can use your own fallback function if create a mapping for
+    `lua require'nvim-treesitter.refactor.navigation(nil, fallback_function)<cr>` .
+    No default mapping
+  - list_definitions: list all definitions from the current file.
+    Defaults to `gnD`.
+  - goto_next_usage: go to next usage of identifier under the cursor.
+    Defaults to `<a-*>`.
+  - goto_previous_usage: go to previous usage of identifier.
+    Defaults to `<a-#>`.
+
+>
+  lua <<EOF
+  require'nvim-treesitter.configs'.setup {
+    refactor = {
+      navigation = {
+        enable = true,
+        keymaps = {
+          goto_definition = "gnd",
+          list_definitions = "gnD",
+          goto_next_usage = "<a-*>",
+          goto_previous_usage = "<a-#>",
+        },
+      },
+    },
+  }
+  EOF
+<
+
+==============================================================================
+MODULE-HIGHLIGHTS                          *nvim-treesitter-module-highlights*
+
+Apart from the general purpose highlights in |nvim-treesitter-highlights|,
+some submodules use their own highlight groups to visualize additional
+information.
+
+`TSDefinition`
+                                                              *hl-TSDefinition*
+Used by refactor.highlight_definitions to highlight the definition of the
+symbol under the cursor.
+
+`TSDefinitionUsage`
+                                                         *hl-TSDefinitionUsage*
+Used by refactor.highlight_definitions to highlight usages of the symbol under
+the cursor.
+
+`TSCurrentScope`
+                                                            *hl-TSCurrentScope*
+Used by refactor.highlight_current_scope to highlight the current scope.

@@ -11,7 +11,7 @@ You can install `nvim-treesitter` with your favorite package manager, or using t
 If you are using [vim-plug](https://github.com/junegunn/vim-plug), put this in your `init.vim` file:
 
 ```vim
-Plug 'nvim-treesitter/refactor'
+Plug 'nvim-treesitter/nvim-treesitter-refactor'
 ```
 
 ## Refactor: highlight definitions

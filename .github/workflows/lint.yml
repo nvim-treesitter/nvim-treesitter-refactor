@@ -8,7 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-
       - name: Prepare
         run: |
           sudo apt-get update
@@ -16,4 +15,4 @@ jobs:
           sudo apt install luarocks -y
           sudo luarocks install luacheck
       - name: Run Luacheck
-        run: sudo ./scripts/style-check.sh
+        run: ./scripts/style-check.sh
