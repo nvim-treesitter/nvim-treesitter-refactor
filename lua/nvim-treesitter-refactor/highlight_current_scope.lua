@@ -30,8 +30,8 @@ function M.attach(bufnr)
   cmd(string.format('augroup NvimTreesitterCurrentScope_%d', bufnr))
   cmd 'au!'
   -- luacheck: push ignore 631
-  cmd(string.format([[autocmd CursorMoved <buffer=%d> lua require'nvim-treesitter.refactor.highlight_current_scope'.highlight_current_scope(%d)]], bufnr, bufnr))
-  cmd(string.format([[autocmd BufLeave <buffer=%d> lua require'nvim-treesitter.refactor.highlight_current_scope'.clear_highlights(%d)]], bufnr, bufnr))
+  cmd(string.format([[autocmd CursorMoved <buffer=%d> lua require'nvim-treesitter-refactor.highlight_current_scope'.highlight_current_scope(%d)]], bufnr, bufnr))
+  cmd(string.format([[autocmd BufLeave <buffer=%d> lua require'nvim-treesitter-refactor.highlight_current_scope'.clear_highlights(%d)]], bufnr, bufnr))
   -- luacheck: pop
   cmd 'augroup END'
 end
