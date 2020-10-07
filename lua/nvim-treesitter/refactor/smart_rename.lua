@@ -49,7 +49,7 @@ function M.attach(bufnr)
   local config = configs.get_module('refactor.smart_rename')
 
   for fn_name, mapping in pairs(config.keymaps) do
-    local cmd = string.format([[:lua require'nvim-treesitter-refactor.smart_rename'.%s(%d)<CR>]], fn_name, bufnr)
+    local cmd = string.format([[:lua require'nvim-treesitter.refactor.smart_rename'.%s(%d)<CR>]], fn_name, bufnr)
     api.nvim_buf_set_keymap(bufnr, 'n', mapping, cmd, { silent = true, noremap = true })
   end
 end

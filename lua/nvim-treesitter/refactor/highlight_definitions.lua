@@ -42,9 +42,9 @@ function M.attach(bufnr)
   cmd(string.format('augroup NvimTreesitterUsages_%d', bufnr))
   cmd 'au!'
   -- luacheck: push ignore 631
-  cmd(string.format([[autocmd CursorHold <buffer=%d> lua require'nvim-treesitter-refactor.highlight_definitions'.highlight_usages(%d)]], bufnr, bufnr))
-  cmd(string.format([[autocmd CursorMoved <buffer=%d> lua require'nvim-treesitter-refactor.highlight_definitions'.clear_usage_highlights(%d)]], bufnr, bufnr))
-  cmd(string.format([[autocmd InsertEnter <buffer=%d> lua require'nvim-treesitter-refactor.highlight_definitions'.clear_usage_highlights(%d)]], bufnr, bufnr))
+  cmd(string.format([[autocmd CursorHold <buffer=%d> lua require'nvim-treesitter.refactor.highlight_definitions'.highlight_usages(%d)]], bufnr, bufnr))
+  cmd(string.format([[autocmd CursorMoved <buffer=%d> lua require'nvim-treesitter.refactor.highlight_definitions'.clear_usage_highlights(%d)]], bufnr, bufnr))
+  cmd(string.format([[autocmd InsertEnter <buffer=%d> lua require'nvim-treesitter.refactor.highlight_definitions'.clear_usage_highlights(%d)]], bufnr, bufnr))
   -- luacheck: pop
   cmd 'augroup END'
 end

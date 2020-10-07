@@ -6,19 +6,19 @@ function M.init()
   require "nvim-treesitter".define_modules {
     refactor = {
       highlight_definitions = {
-        module_path = 'nvim-treesitter-refactor.highlight_definitions',
+        module_path = 'nvim-treesitter.refactor.highlight_definitions',
         enable = false,
         disable = {},
         is_supported = queries.has_locals
       },
       highlight_current_scope = {
-        module_path = 'nvim-treesitter-refactor.highlight_current_scope',
+        module_path = 'nvim-treesitter.refactor.highlight_current_scope',
         enable = false,
         disable = {},
         is_supported = queries.has_locals,
       },
       smart_rename = {
-        module_path = 'nvim-treesitter-refactor.smart_rename',
+        module_path = 'nvim-treesitter.refactor.smart_rename',
         enable = false,
         disable = {},
         is_supported = queries.has_locals,
@@ -27,7 +27,7 @@ function M.init()
         }
       },
       navigation = {
-        module_path = 'nvim-treesitter-refactor.navigation',
+        module_path = 'nvim-treesitter.refactor.navigation',
         enable = false,
         disable = {},
         is_supported = queries.has_locals,
