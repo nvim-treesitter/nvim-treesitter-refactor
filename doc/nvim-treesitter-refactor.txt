@@ -10,7 +10,7 @@ Authors: Steven Sojka <steelsojka@gmail.com>
                                        Type |gO| to see the table of contents.
 
 ==============================================================================
-QUICK START                                       *nvim-treesitter-quickstart*
+QUICK START                              *nvim-treesitter-refactor-quickstart*
 
 See :help nvim-treesitter on how to configure modules
 
