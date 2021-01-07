@@ -4,7 +4,10 @@ Refactor modules for [nvim-treesitter](https://github.com/nvim-treesitter/nvim-t
 
 ## Installation
 
-You can install `nvim-treesitter` with your favorite package manager, or using the default `pack` feature of Neovim!
+You can install `nvim-treesitter-refactor` with your favorite package manager,
+or using the default `pack` feature of Neovim!
+
+Note: This plugin requires [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) installed.
 
 ### Using a package manager
 
@@ -14,7 +17,7 @@ If you are using [vim-plug](https://github.com/junegunn/vim-plug), put this in y
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
 ```
 
-## Refactor: highlight definitions
+## Highlight definitions
 
 Highlights definition and usages of the current symbol under the cursor.
 
@@ -28,7 +31,7 @@ require'nvim-treesitter.configs'.setup {
 EOF
 ```
 
-## Refactor: highlight current scope
+## Highlight current scope
 
 Highlights the block from the current scope where the cursor is.
 
@@ -42,7 +45,7 @@ require'nvim-treesitter.configs'.setup {
 EOF
 ```
 
-## Refactor: smart rename
+## Smart rename
 
 Renames the symbol under the cursor within the current scope (and current file).
 
@@ -61,7 +64,7 @@ require'nvim-treesitter.configs'.setup {
 EOF
 ```
 
-## Refactor: navigation
+## Navigation
 
 Provides "go to definition" for the symbol under the cursor,
 and lists the definitions from the current file. If you use
