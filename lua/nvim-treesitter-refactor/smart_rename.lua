@@ -25,19 +25,17 @@ function M.smart_rename(bufnr)
   if not new_name or #new_name < 1 then return end
 
   local definition, scope = locals.find_definition(node_at_point, bufnr)
-  local nodes_to_rename = locals.find_usages(definition, scope, bufnr)
+  local nodes_to_rename = {}
+  nodes_to_rename[node_at_point:id()] = node_at_point
+  nodes_to_rename[definition:id()] = definition
 
-  if not vim.tbl_contains(nodes_to_rename, node_at_point) then
-    table.insert(nodes_to_rename, node_at_point)
-  end
-
-  if not vim.tbl_contains(nodes_to_rename, definition) then
-    table.insert(nodes_to_rename, definition)
+  for _, n in ipairs(locals.find_usages(definition, scope, bufnr)) do
+    nodes_to_rename[n:id()] = n
   end
 
   local edits = {}
 
-  for _, node in ipairs(nodes_to_rename) do
+  for _, node in pairs(nodes_to_rename) do
     local lsp_range = ts_utils.node_to_lsp_range(node)
     local text_edit = { range = lsp_range, newText = new_name }
     table.insert(edits, text_edit)
