@@ -150,6 +150,77 @@ end
 function M.goto_next_usage(bufnr) return M.goto_adjacent_usage(bufnr, 1) end
 function M.goto_previous_usage(bufnr) return M.goto_adjacent_usage(bufnr, -1) end
 
+function M.get_function_or_method_definitions(bufnr, node_at_point)
+  local local_nodes = locals.get_locals(bufnr)
+
+  local defs = {}
+
+  for _, loc in ipairs(local_nodes) do
+    if loc.definition and loc.definition.method and loc.definition.method.node then
+      if not M.node_a_at_b(node_at_point, loc.definition.method.node) then
+        table.insert(defs, loc.definition.method.node)
+      end
+    end
+    if loc.definition and loc.definition["function"] and loc.definition["function"].node then
+      if not M.node_a_at_b(node_at_point, loc.definition["function"].node) then
+        table.insert(defs, loc.definition["function"].node)
+      end
+    end
+  end
+
+  table.sort(defs, M.node_a_before_b)
+  return defs
+end
+
+function M.node_a_before_b(node_a, node_b)
+  local start_row_a, start_col_a, _, _ = node_a:range()
+  local start_row_b, start_col_b, _, _ = node_b:range()
+  if start_row_a == start_row_b then return start_col_a < start_col_b end
+  return start_row_a < start_row_b
+end
+
+function M.node_a_at_b(node_a, node_b)
+  local start_row_a, start_col_a, _, _ = node_a:range()
+  local start_row_b, start_col_b, _, _ = node_b:range()
+  return (start_row_a == start_row_b) and (start_col_a == start_col_b)
+end
+
+function M.get_surrounding_nodes(sorted_nodes, node_at_point)
+  if #sorted_nodes == 0 then return nil, nil end
+  local left = nil
+  local right = sorted_nodes[1]
+  for i=1, #sorted_nodes do
+    local node = sorted_nodes[i]
+    if M.node_a_before_b(node, node_at_point) then
+      left = node
+      right = sorted_nodes[i+1]
+    else
+      break
+    end
+  end
+  return left, right
+end
+
+function M.get_surrounding_function_or_method(bufnr)
+  local bufnr = bufnr or api.nvim_get_current_buf()
+  local node_at_point = ts_utils.get_node_at_cursor()
+  if not node_at_point then return nil, nil end
+
+  local defs = M.get_function_or_method_definitions(bufnr, node_at_point)
+  local previous, next = M.get_surrounding_nodes(defs, node_at_point)
+  return previous, next
+end
+
+function M.goto_next_function_or_method(bufnr)
+  local _, next = M.get_surrounding_function_or_method(bufnr)
+  if next then ts_utils.goto_node(next) end
+end
+
+function M.goto_previous_function_or_method(bufnr)
+  local previous, _ = M.get_surrounding_function_or_method(bufnr)
+  if previous then ts_utils.goto_node(previous) end
+end
+
 function M.attach(bufnr)
   local config = configs.get_module('refactor.navigation')
 
