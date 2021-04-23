@@ -16,7 +16,7 @@ function M.goto_definition(bufnr, fallback_function)
 
   local definition = locals.find_definition(node_at_point, bufnr)
 
-  if fallback_function and definition.id == node_at_point.id then
+  if fallback_function and definition == node_at_point then
     fallback_function()
   else
     ts_utils.goto_node(definition)
