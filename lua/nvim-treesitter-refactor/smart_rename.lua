@@ -34,7 +34,7 @@ function M.smart_rename(bufnr)
       local text_edit = { range = lsp_range, newText = new_name }
       table.insert(edits, text_edit)
     end
-    vim.lsp.util.apply_text_edits(edits, bufnr)
+    vim.lsp.util.apply_text_edits(edits, bufnr, "utf-8")
   end
 
   if not node_at_point then
