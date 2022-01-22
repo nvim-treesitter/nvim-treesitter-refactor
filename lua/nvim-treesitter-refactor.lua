@@ -10,6 +10,7 @@ function M.init()
         enable = false,
         disable = {},
         is_supported = queries.has_locals,
+        clear_on_cursor_move = true,
       },
       highlight_current_scope = {
         module_path = "nvim-treesitter-refactor.highlight_current_scope",

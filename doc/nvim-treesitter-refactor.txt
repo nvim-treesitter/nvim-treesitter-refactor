@@ -26,12 +26,19 @@ Query files: `locals.scm`.
 Supported options:
 - enable: `true` or `false`.
 - disable: list of languages.
+- clear_on_cursor_move: `true` or `false` if highlights should be cleared
+  when the cursor is moved. If your 'updatetime' is around `100`
+  you can set this to false to have a less laggy experience.
 
 >
   lua <<EOF
   require'nvim-treesitter.configs'.setup {
     refactor = {
-      highlight_definitions = { enable = true },
+      highlight_definitions = {
+        enable = true,
+        -- Set to false if you have an `updatetime` of ~100.
+        clear_on_cursor_move = true,
+      },
     },
   }
   EOF
