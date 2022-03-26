@@ -46,7 +46,7 @@ function M.attach(bufnr)
   -- luacheck: push ignore 631
   cmd(
     string.format(
-      [[autocmd CursorMoved <buffer=%d> lua require'nvim-treesitter-refactor.highlight_current_scope'.highlight_current_scope(%d)]],
+      [[autocmd CursorMoved,WinScrolled <buffer=%d> lua require'nvim-treesitter-refactor.highlight_current_scope'.highlight_current_scope(%d)]],
       bufnr,
       bufnr
     )
