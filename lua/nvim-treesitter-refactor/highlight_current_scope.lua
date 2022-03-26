@@ -16,9 +16,9 @@ function M.highlight_current_scope(bufnr)
   local current_scope = locals.containing_scope(node_at_point, bufnr)
 
   if current_scope then
-    local start_line = current_scope:start()
+    local start_line, _, end_line, _ = current_scope:range()
 
-    if start_line ~= 0 then
+    if start_line ~= 0 or end_line ~= vim.fn.line("$") then
       ts_utils.highlight_node(current_scope, bufnr, current_scope_namespace, "TSCurrentScope")
     end
   end
