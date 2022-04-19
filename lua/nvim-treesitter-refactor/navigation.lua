@@ -71,7 +71,7 @@ function M.list_definitions(bufnr)
   for _, node in ipairs(definitions) do
     local lnum, col, _ = node.node:start()
     local type = string.upper(node.type:sub(1, 1))
-    local text = ts_query.get_node_text(node.node) or ""
+    local text = ts_query.get_node_text(node.node, bufnr) or ""
     table.insert(qf_list, {
       bufnr = bufnr,
       lnum = lnum + 1,
@@ -126,7 +126,7 @@ function M.list_definitions_toc()
 
     local lnum, col, _ = def.node:start()
     local type = string.upper(def.type:sub(1, 1))
-    local text = ts_query.get_node_text(def.node) or ""
+    local text = ts_query.get_node_text(def.node, bufnr) or ""
     table.insert(loc_list, {
       bufnr = bufnr,
       lnum = lnum + 1,
