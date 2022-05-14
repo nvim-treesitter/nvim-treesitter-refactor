@@ -20,8 +20,8 @@ function M.highlight_current_scope(bufnr)
     local config = configs.get_module "refactor.highlight_current_scope"
     -- Highlight range [start_line, end_line) 0-based
     local highlighter = function(start_line, end_line)
-      vim.api.nvim_buf_set_extmark(bufnr, current_scope_namespace, math.max(vim.fn.line("w0") - 1, start_line), 0, {
-        end_row = math.min(vim.fn.line("w$"), end_line),
+      vim.api.nvim_buf_set_extmark(bufnr, current_scope_namespace, math.max(vim.fn.line "w0" - 1, start_line), 0, {
+        end_row = math.min(vim.fn.line "w$", end_line),
         end_col = 0,
         hl_group = "TSCurrentScope",
         hl_eol = config.highlight_eol,
@@ -29,9 +29,9 @@ function M.highlight_current_scope(bufnr)
     end
     local start_line, _, end_line, _ = current_scope:range()
 
-    if start_line ~= 0 or end_line ~= vim.fn.line("$") then
-      highlighter(start_line, vim.fn.line(".") + (config.highlight_cursor and 0 or -1))
-      highlighter(vim.fn.line("."), end_line + 1)
+    if start_line ~= 0 or end_line ~= vim.fn.line "$" then
+      highlighter(start_line, vim.fn.line "." + (config.highlight_cursor and 0 or -1))
+      highlighter(vim.fn.line ".", end_line + 1)
     end
   end
 end
