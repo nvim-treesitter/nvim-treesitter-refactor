@@ -10,33 +10,49 @@ local api = vim.api
 
 local M = {}
 
+local function complete_rename(bufnr, node_at_point, new_name)
+  -- Empty name cancels the interaction or ESC
+  if not new_name or #new_name < 1 then
+    return
+  end
+
+  local definition, scope = locals.find_definition(node_at_point, bufnr)
+  local nodes_to_rename = {}
+  nodes_to_rename[node_at_point:id()] = node_at_point
+  nodes_to_rename[definition:id()] = definition
+
+  for _, n in ipairs(locals.find_usages(definition, scope, bufnr)) do
+    nodes_to_rename[n:id()] = n
+  end
+
+  local edits = {}
+
+  for _, node in pairs(nodes_to_rename) do
+    local lsp_range = ts_utils.node_to_lsp_range(node)
+    local text_edit = { range = lsp_range, newText = new_name }
+    table.insert(edits, text_edit)
+  end
+  vim.lsp.util.apply_text_edits(edits, bufnr, "utf-8")
+  pcall(
+    vim.fn["repeat#set"],
+    vim.api.nvim_replace_termcodes(
+      string.format([[<Cmd>lua require('nvim-treesitter-refactor.smart_rename').repeat_rename('%s')<CR>]], new_name),
+      true,
+      false,
+      true
+    )
+  )
+end
+
+function M.repeat_rename(new_name)
+  local bufnr = api.nvim_get_current_buf()
+  local node_at_point = ts_utils.get_node_at_cursor()
+  complete_rename(bufnr, node_at_point, new_name)
+end
+
 function M.smart_rename(bufnr)
   bufnr = bufnr or api.nvim_get_current_buf()
   local node_at_point = ts_utils.get_node_at_cursor()
-  local function complete_rename(new_name)
-    -- Empty name cancels the interaction or ESC
-    if not new_name or #new_name < 1 then
-      return
-    end
-
-    local definition, scope = locals.find_definition(node_at_point, bufnr)
-    local nodes_to_rename = {}
-    nodes_to_rename[node_at_point:id()] = node_at_point
-    nodes_to_rename[definition:id()] = definition
-
-    for _, n in ipairs(locals.find_usages(definition, scope, bufnr)) do
-      nodes_to_rename[n:id()] = n
-    end
-
-    local edits = {}
-
-    for _, node in pairs(nodes_to_rename) do
-      local lsp_range = ts_utils.node_to_lsp_range(node)
-      local text_edit = { range = lsp_range, newText = new_name }
-      table.insert(edits, text_edit)
-    end
-    vim.lsp.util.apply_text_edits(edits, bufnr, "utf-8")
-  end
 
   if not node_at_point then
     utils.print_warning "No node to rename!"
@@ -47,9 +63,11 @@ function M.smart_rename(bufnr)
   local input = { prompt = "New name: ", default = node_text or "" }
   if not vim.ui.input then
     local new_name = vim.fn.input(input.prompt, input.default)
-    complete_rename(new_name)
+    complete_rename(bufnr, node_at_point, new_name)
   else
-    vim.ui.input(input, complete_rename)
+    vim.ui.input(input, function(new_name)
+      complete_rename(bufnr, node_at_point, new_name)
+    end)
   end
 end
 
