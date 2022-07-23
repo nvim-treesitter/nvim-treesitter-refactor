@@ -46,10 +46,12 @@ function M.smart_rename(bufnr)
   local node_text = ts_query.get_node_text(node_at_point, bufnr)
   local input = { prompt = "New name: ", default = node_text or "" }
   if not vim.ui.input then
-    local new_name = vim.fn.input(input.prompt, input.default)
-    complete_rename(new_name)
+    local ok, new_name = pcall(vim.fn.input, input.prompt, input.default)
+    if ok then
+      complete_rename(new_name)
+    end
   else
-    vim.ui.input(input, complete_rename)
+    pcall(vim.ui.input, input, complete_rename)
   end
 end
 
