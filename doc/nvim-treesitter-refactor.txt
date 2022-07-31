@@ -83,6 +83,7 @@ Supported options:
     refactor = {
       smart_rename = {
         enable = true,
+        -- Assign keymaps to false to disable them, e.g. `smart_rename = false`.
         keymaps = {
           smart_rename = "grr",
         },
@@ -126,6 +127,7 @@ Supported options:
     refactor = {
       navigation = {
         enable = true,
+        -- Assign keymaps to false to disable them, e.g. `goto_definition = false`.
         keymaps = {
           goto_definition = "gnd",
           list_definitions = "gnD",
