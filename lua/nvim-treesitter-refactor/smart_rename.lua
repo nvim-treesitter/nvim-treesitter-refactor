@@ -57,8 +57,10 @@ function M.attach(bufnr)
   local config = configs.get_module "refactor.smart_rename"
 
   for fn_name, mapping in pairs(config.keymaps) do
-    local cmd = string.format([[:lua require'nvim-treesitter-refactor.smart_rename'.%s(%d)<CR>]], fn_name, bufnr)
-    api.nvim_buf_set_keymap(bufnr, "n", mapping, cmd, { silent = true, noremap = true, desc = fn_name })
+    if mapping then
+      local cmd = string.format([[:lua require'nvim-treesitter-refactor.smart_rename'.%s(%d)<CR>]], fn_name, bufnr)
+      api.nvim_buf_set_keymap(bufnr, "n", mapping, cmd, { silent = true, noremap = true, desc = fn_name })
+    end
   end
 end
 
@@ -66,7 +68,9 @@ function M.detach(bufnr)
   local config = configs.get_module "refactor.smart_rename"
 
   for _, mapping in pairs(config.keymaps) do
-    api.nvim_buf_del_keymap(bufnr, "n", mapping)
+    if mapping then
+      api.nvim_buf_del_keymap(bufnr, "n", mapping)
+    end
   end
 end
 

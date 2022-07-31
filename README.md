@@ -59,6 +59,7 @@ require'nvim-treesitter.configs'.setup {
   refactor = {
     smart_rename = {
       enable = true,
+      -- Assign keymaps to false to disable them, e.g. `smart_rename = false`.
       keymaps = {
         smart_rename = "grr",
       },
@@ -83,6 +84,7 @@ require'nvim-treesitter.configs'.setup {
   refactor = {
     navigation = {
       enable = true,
+      -- Assign keymaps to false to disable them, e.g. `goto_definition = false`.
       keymaps = {
         goto_definition = "gnd",
         list_definitions = "gnD",
