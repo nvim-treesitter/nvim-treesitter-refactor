@@ -163,14 +163,16 @@ function M.goto_adjacent_usage(bufnr, delta)
 end
 
 function M.goto_next_usage(bufnr)
-  return M.goto_adjacent_usage(bufnr, 1)
+  local delta = math.max(vim.v.count, 1)
+  M.goto_adjacent_usage(bufnr, delta)
 end
 function M.goto_previous_usage(bufnr)
-  return M.goto_adjacent_usage(bufnr, -1)
+  local delta = math.max(vim.v.count, 1)
+  M.goto_adjacent_usage(bufnr, -delta)
 end
 
 function M.attach(bufnr)
-  local config = configs.get_module "refactor.navigation"
+  local config = configs.get_module("refactor.navigation")
 
   for fn_name, mapping in pairs(config.keymaps) do
     local cmd = string.format([[:lua require'nvim-treesitter-refactor.navigation'.%s(%d)<CR>]], fn_name, bufnr)
