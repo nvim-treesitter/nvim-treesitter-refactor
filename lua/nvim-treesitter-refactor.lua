@@ -1,8 +1,8 @@
-local queries = require "nvim-treesitter.query"
-
 local M = {}
 
 function M.init()
+  local queries = require "nvim-treesitter.query"
+
   require("nvim-treesitter").define_modules {
     refactor = {
       highlight_definitions = {
