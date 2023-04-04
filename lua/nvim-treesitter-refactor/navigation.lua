@@ -1,13 +1,20 @@
 -- Definition based navigation module
 
 local ts_utils = require "nvim-treesitter.ts_utils"
-local utils = require "nvim-treesitter.utils"
 local locals = require "nvim-treesitter.locals"
 local configs = require "nvim-treesitter.configs"
 local ts_query = vim.treesitter.query
 local api = vim.api
 
 local M = {}
+
+local function index_of(tbl, obj)
+  for i, o in ipairs(tbl) do
+    if o == obj then
+      return i
+    end
+  end
+end
 
 function M.goto_definition(bufnr, fallback_function)
   local bufnr = bufnr or api.nvim_get_current_buf()
@@ -153,7 +160,7 @@ function M.goto_adjacent_usage(bufnr, delta)
   local def_node, scope = locals.find_definition(node_at_point, bufnr)
   local usages = locals.find_usages(def_node, scope, bufnr)
 
-  local index = utils.index_of(usages, node_at_point)
+  local index = index_of(usages, node_at_point)
   if not index then
     return
   end
