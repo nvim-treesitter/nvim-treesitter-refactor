@@ -3,7 +3,6 @@
 local ts_utils = require "nvim-treesitter.ts_utils"
 local locals = require "nvim-treesitter.locals"
 local configs = require "nvim-treesitter.configs"
-local ts_query = vim.treesitter.query
 local api = vim.api
 
 local M = {}
@@ -15,6 +14,8 @@ local function index_of(tbl, obj)
     end
   end
 end
+
+local get_node_text = vim.treesitter.get_node_text or vim.treesitter.query.get_node_text
 
 function M.goto_definition(bufnr, fallback_function)
   local bufnr = bufnr or api.nvim_get_current_buf()
@@ -78,7 +79,7 @@ function M.list_definitions(bufnr)
   for _, node in ipairs(definitions) do
     local lnum, col, _ = node.node:start()
     local type = string.upper(node.type:sub(1, 1))
-    local text = ts_query.get_node_text(node.node, bufnr) or ""
+    local text = get_node_text(node.node, bufnr) or ""
     table.insert(qf_list, {
       bufnr = bufnr,
       lnum = lnum + 1,
@@ -133,7 +134,7 @@ function M.list_definitions_toc()
 
     local lnum, col, _ = def.node:start()
     local type = string.upper(def.type:sub(1, 1))
-    local text = ts_query.get_node_text(def.node, bufnr) or ""
+    local text = get_node_text(def.node, bufnr) or ""
     table.insert(loc_list, {
       bufnr = bufnr,
       lnum = lnum + 1,
