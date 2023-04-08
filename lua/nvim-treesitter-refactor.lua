@@ -17,6 +17,8 @@ function M.init()
         enable = false,
         disable = {},
         is_supported = queries.has_locals,
+        highlight_eol = false,
+        highlight_cursor = false,
       },
       smart_rename = {
         module_path = "nvim-treesitter-refactor.smart_rename",
