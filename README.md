@@ -2,6 +2,10 @@
 
 Refactor modules for [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
 
+> [!CAUTION]
+> This plugin is deprecated because it is not compatible with the maintained nvim-treesitter `main` branch.
+> See https://github.com/nvim-treesitter/nvim-treesitter-locals for a replacement.
+
 ## Installation
 
 You can install `nvim-treesitter-refactor` with your favorite package manager,
